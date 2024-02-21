@@ -43,7 +43,7 @@ export const CategoryPage = () => {
     }
 
     const handleCategoryUpdate = async (id: string) => {
-        const response = await axiosInstance.get(`/Category/Delete?categoryId=${id}&newCategoryName=${categoryName}`);
+        const response = await axiosInstance.get(`/Category/Update?categoryId=${id}&newCategoryName=${categoryName}`);
         if (response.status === 200) {
             (async () => {
                 const response = await axiosInstance.get("/Category/List");
