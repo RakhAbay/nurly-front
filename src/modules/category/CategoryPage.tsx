@@ -19,9 +19,14 @@ export const CategoryPage = () => {
     }, [refetchFlag])
 
     const handleCategoryCreation = async () => {
-        const response = await axiosInstance.get("/Category/List");
+        const response = await axiosInstance.get("/Category/Create?categoryName="+categoryName);
         if (response.status === 200) {
-            setRefetchFlag(!!refetchFlag)
+            (async () => {
+                const response = await axiosInstance.get("/Category/List");
+                if (response.status === 200) {
+                    setCategories(response.data)
+                }
+            })()
         }
     } 
 
