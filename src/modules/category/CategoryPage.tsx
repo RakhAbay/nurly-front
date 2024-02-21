@@ -30,11 +30,28 @@ export const CategoryPage = () => {
         }
     } 
 
+    const handleCategoryDeletion = async (id: string) => {
+        const response = await axiosInstance.get("/Category/Delete?categoryId="+id);
+        if (response.status === 200) {
+            (async () => {
+                const response = await axiosInstance.get("/Category/List");
+                if (response.status === 200) {
+                    setCategories(response.data)
+                }
+            })()
+        }
+    }
+
     return (
         <>
             <h1>Categories</h1>
             {categories.map(item => {
-                return <h3>{item.name}</h3>
+                return (
+                    <>
+                    <h3>{item.name}</h3>
+                    <button onClick={() => handleCategoryDeletion(item.categoryId)}>delete</button>
+                    </>
+                )
             })}
             <h1>Add</h1>
             <input value={categoryName} onChange={e => setCategoryName(e.target.value)} /> <br />
