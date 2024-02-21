@@ -42,6 +42,18 @@ export const CategoryPage = () => {
         }
     }
 
+    const handleCategoryUpdate = async (id: string) => {
+        const response = await axiosInstance.get(`/Category/Delete?categoryId=${id}&newCategoryName=${categoryName}`);
+        if (response.status === 200) {
+            (async () => {
+                const response = await axiosInstance.get("/Category/List");
+                if (response.status === 200) {
+                    setCategories(response.data)
+                }
+            })()
+        }
+    }
+
     return (
         <>
             <h1>Categories</h1>
@@ -50,6 +62,7 @@ export const CategoryPage = () => {
                     <>
                     <h3>{item.name}</h3>
                     <button onClick={() => handleCategoryDeletion(item.categoryId)}>delete</button>
+                    <button onClick={() => handleCategoryUpdate(item.categoryId)}>update</button>
                     </>
                 )
             })}
