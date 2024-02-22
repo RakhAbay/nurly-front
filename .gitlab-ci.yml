@@ -1,0 +1,42 @@
+stages:
+    - test
+    - compile
+    - build
+    - deploy
+
+test-job:
+    stage: test
+    script: 
+        - echo "Test success"
+    tags:
+      - docker-vm
+      - shell
+      - azure
+
+compile-job:
+    image: node:18-alpine
+    stage: compile
+    script: 
+        - echo "Compile success"
+    tags:
+      - docker-vm
+      - docker
+      - azure
+
+build-job:
+    stage: build
+    script: 
+        - echo "Build success"
+    tags:
+      - docker-vm
+      - docker
+      - azure
+
+deploy-job:
+    stage: deploy
+    script: 
+        - echo "Deploy success"
+    tags:
+      - docker-vm
+      - docker
+      - azure
