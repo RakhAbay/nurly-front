@@ -4,8 +4,8 @@ import { ICategory } from "../../common/types/ICategory";
 
 
 
-export const CategoryPage = () => {
-    const [categories, setCategories] = useState<ICategory[]>([]);
+export const TransactionsPage = () => {
+    const [transactions, setTransactions] = useState<ICategory[]>([]);
     const [categoryName, setCategoryName] = useState('');
     const [refetchFlag, setRefetchFlag] = useState(false);
 
@@ -58,12 +58,12 @@ export const CategoryPage = () => {
         <>
             <h1>Categories</h1>
             {categories.map(item => {
-                return ( 
-                    <div key={item.name}>
+                return (
+                    <>
                     <h3>{item.name}</h3>
                     <button onClick={() => handleCategoryDeletion(item.categoryId)}>delete</button>
                     <button onClick={() => handleCategoryUpdate(item.categoryId)}>update</button>
-                    </div>
+                    </>
                 )
             })}
             <h1>Add</h1>

@@ -13,6 +13,7 @@ export const LoginPage = () => {
       password
     })
     if (response.status === 200) {
+      localStorage.setItem('nurly-token', response.data.accessToken)
       navigate('/category')
     } 
   }
