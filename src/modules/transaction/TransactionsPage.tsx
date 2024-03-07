@@ -1,74 +1,108 @@
 import { useEffect, useState } from "react";
 import { axiosInstance } from "../../common/config/axiosInstance";
-import { ICategory } from "../../common/types/ICategory";
+import { ITransaction } from "../../common/types/ITransaction";
+import { ICategory, ISubcategory } from "../../common/types/ICategory";
 
-
+const defaultForm: ITransaction = {
+    amount: 0,
+    description: '',
+    isActive: true,
+    subCategoryId: '',
+    transactionType: 'Expense'
+}
 
 export const TransactionsPage = () => {
-    const [transactions, setTransactions] = useState<ICategory[]>([]);
-    const [categoryName, setCategoryName] = useState('');
-    const [refetchFlag, setRefetchFlag] = useState(false);
+    const [transactions, setTransactions] = useState<ITransaction[]>([]);
+    const [categories, setCategories] = useState<ICategory[]>([]);
+    const [subcategories, setSubcategories] = useState<ISubcategory[]>([]);
+    const [form, setForm] = useState<ITransaction>(defaultForm)
+    const [subcategoryId, setSubcategoryId] = useState('');
 
-    useEffect(()=> {
+
+    useEffect(() => {
         (async () => {
             const response = await axiosInstance.get("/Category/List");
             if (response.status === 200) {
                 setCategories(response.data)
             }
+
+            (async () => {
+                const response = await axiosInstance.get("/WalletTransaction/List");
+                if (response.status === 200) {
+                    setTransactions(response.data)
+                }
+            })()
         })()
-    }, [refetchFlag])
+    }, [])
 
-    const handleCategoryCreation = async () => {
-        const response = await axiosInstance.get("/Category/Create?categoryName="+categoryName);
-        if (response.status === 200) {
-            (async () => {
-                const response = await axiosInstance.get("/Category/List");
-                if (response.status === 200) {
-                    setCategories(response.data)
-                }
-            })()
-        }
-    } 
-
-    const handleCategoryDeletion = async (id: string) => {
-        const response = await axiosInstance.get("/Category/Delete?categoryId="+id);
-        if (response.status === 200) {
-            (async () => {
-                const response = await axiosInstance.get("/Category/List");
-                if (response.status === 200) {
-                    setCategories(response.data)
-                }
-            })()
-        }
+    const handleFormChange = (event: any) => {
+        console.log(event)
+        const key = event.target.name
+        const value = event.target.value
+        const few = { ...form, [key]: value }
+        console.log(few)
+        setForm(few)
     }
 
-    const handleCategoryUpdate = async (id: string) => {
-        const response = await axiosInstance.get(`/Category/Update?categoryId=${id}&newCategoryName=${categoryName}`);
+    const handleTransactionCreation = async () => {
+        const response = await axiosInstance.post("/WalletTransaction/Create", form);
         if (response.status === 200) {
             (async () => {
-                const response = await axiosInstance.get("/Category/List");
+                const response = await axiosInstance.get("/WalletTransaction/List");
                 if (response.status === 200) {
-                    setCategories(response.data)
+                    setTransactions(response.data)
                 }
             })()
+        }
+
+
+        
+    }
+
+   
+
+
+    const handleCategorySelect = async (id: string) => {
+        if (id == null){
+            return;
+        }
+        const response2 = await axiosInstance.get("/Subcategory/List?categoryId="+id);
+        if (response2.status === 200) {
+            setSubcategories(response2.data)
         }
     }
 
     return (
         <>
-            <h1>Categories</h1>
-            {categories.map(item => {
-                return (
-                    <>
-                    <h3>{item.name}</h3>
-                    <button onClick={() => handleCategoryDeletion(item.categoryId)}>delete</button>
-                    <button onClick={() => handleCategoryUpdate(item.categoryId)}>update</button>
-                    </>
-                )
-            })}
+            
             <h1>Add</h1>
-            <input value={categoryName} onChange={e => setCategoryName(e.target.value)} /> <br />
-            <button onClick={handleCategoryCreation}>Create category</button>
+            <select onChange={e => handleCategorySelect(e.target.value)} name="categories" id="categories-select">
+                <option value="">--Please choose category--</option>
+                {categories.map(item => <option key={item.name} value={item.categoryId}>{item.name}</option>)}
+            </select> <br />
+
+            <select onChange={e => handleFormChange(e)} name="subCategoryId" id="subcategories-select">
+                <option value="">--Please choose subcategory--</option>
+                {subcategories.map(item => <option key={item.name} value={item.subCategoryId}>{item.name}</option>)}
+            </select> <br />
+
+            <input name="amount" value={form.amount} onChange={e => handleFormChange(e)} /> <br />
+            <input name="description" value={form.description} onChange={e => handleFormChange(e)} /> <br />
+
+            <select onChange={e => handleFormChange(e)} name="transactionType" id="tpye-select">
+                <option value="Income">Income</option>
+                <option value="Expense">Expense</option>
+            </select> <br />
+
+            <button onClick={handleTransactionCreation}>Add Transaction</button>
+
+            {transactions.map(item => {
+                return (
+                    <div>
+                        {item.amount} | {item.description} | {item.transactionType}
+                    </div>
+                    )
+            })}
         </>
     );
 };

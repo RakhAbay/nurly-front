@@ -58,3 +58,10 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+.pinned{
+  position: absolute;
+  top: 40%;
+  right: 0;
+}
+

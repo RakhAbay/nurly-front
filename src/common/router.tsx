@@ -4,6 +4,8 @@ import { LoginPage } from "../modules/auth/LoginPage";
 import { CategoryPage } from "../modules/category/CategoryPage";
 import { SubcategoryPage } from "../modules/subcategory/SubcategoryPage";
 import { AppLayout } from "./layout/AppLayout";
+import { TransactionsPage } from "../modules/transaction/TransactionsPage";
+import { ChatBotContainer } from "./components/ChatbotContainer";
 
 const router = createBrowserRouter([
     {
@@ -12,19 +14,48 @@ const router = createBrowserRouter([
         children: [
             {
                 path: '/register',
-                element: <RegisterPage />
+                element: (
+                    <>
+                        <RegisterPage />
+                        <ChatBotContainer page={"register"} />
+                    </>
+                )
             },
             {
                 path: '/login',
-                element: <LoginPage />
+                element: (
+                    <>
+                        <LoginPage />
+                        <ChatBotContainer page={"login"}/>
+                    </>
+                )
             },
             {
                 path: '/category',
-                element: <CategoryPage />
+                element: (
+                    <>
+                        <CategoryPage />
+                        <ChatBotContainer page={"category"}/>
+                    </>
+                )
             },
             {
                 path: '/subcategory',
-                element: <SubcategoryPage />
+                element: (
+                    <>
+                        <SubcategoryPage/>
+                        <ChatBotContainer page={"subcategory"}/>
+                    </>
+                )
+            },
+            {
+                path: '/transaction',
+                element: (
+                    <>
+                        <TransactionsPage/>
+                        <ChatBotContainer page={"transaction"}/>
+                    </>
+                )
             },
         ]
     },
